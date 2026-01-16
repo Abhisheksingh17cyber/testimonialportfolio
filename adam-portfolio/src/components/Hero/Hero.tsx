@@ -1,25 +1,18 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { TypeAnimation } from 'react-type-animation';
-import { FaLinkedin, FaTwitter, FaInstagram, FaDribbble } from 'react-icons/fa';
-import { HiArrowDown } from 'react-icons/hi';
+import { Link } from 'react-scroll';
+import { UilLinkedin, UilTwitter, UilInstagram, UilDribbble, UilArrowDown } from '@iconscout/react-unicons';
 import ParticleBackground from '../ParticleBackground/ParticleBackground';
 import './Hero.css';
 
 const Hero: React.FC = () => {
   const socialLinks = [
-    { icon: <FaLinkedin />, href: 'https://linkedin.com', label: 'LinkedIn' },
-    { icon: <FaTwitter />, href: 'https://twitter.com', label: 'Twitter' },
-    { icon: <FaInstagram />, href: 'https://instagram.com', label: 'Instagram' },
-    { icon: <FaDribbble />, href: 'https://dribbble.com', label: 'Dribbble' },
+    { icon: <UilLinkedin size={20} />, href: 'https://linkedin.com', label: 'LinkedIn' },
+    { icon: <UilTwitter size={20} />, href: 'https://twitter.com', label: 'Twitter' },
+    { icon: <UilInstagram size={20} />, href: 'https://instagram.com', label: 'Instagram' },
+    { icon: <UilDribbble size={20} />, href: 'https://dribbble.com', label: 'Dribbble' },
   ];
-
-  const handleScrollDown = () => {
-    const aboutSection = document.getElementById('about');
-    if (aboutSection) {
-      aboutSection.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
 
   return (
     <section id="home" className="hero">
@@ -95,30 +88,36 @@ const Hero: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.6 }}
           >
-            <motion.a
-              href="#portfolio"
-              className="btn-primary"
+            <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={(e) => {
-                e.preventDefault();
-                document.getElementById('portfolio')?.scrollIntoView({ behavior: 'smooth' });
-              }}
             >
-              View My Work
-            </motion.a>
-            <motion.a
-              href="#contact"
-              className="btn-secondary"
+              <Link
+                to="portfolio"
+                spy={true}
+                smooth={true}
+                offset={-70}
+                duration={500}
+                className="btn-primary"
+              >
+                View My Work
+              </Link>
+            </motion.div>
+            <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={(e) => {
-                e.preventDefault();
-                document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
-              }}
             >
-              Get In Touch
-            </motion.a>
+              <Link
+                to="contact"
+                spy={true}
+                smooth={true}
+                offset={-70}
+                duration={500}
+                className="btn-secondary"
+              >
+                Get In Touch
+              </Link>
+            </motion.div>
           </motion.div>
 
           <motion.div
@@ -213,6 +212,7 @@ const Hero: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 2.2 + index * 0.1 }}
+            aria-label={social.label}
           >
             {social.icon}
           </motion.a>
@@ -225,15 +225,16 @@ const Hero: React.FC = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 2.5 }}
-        onClick={handleScrollDown}
       >
-        <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
-        >
-          <HiArrowDown className="scroll-icon" />
-        </motion.div>
-        <span>Scroll Down</span>
+        <Link to="about" spy={true} smooth={true} offset={-70} duration={500}>
+          <motion.div
+            animate={{ y: [0, 10, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+          >
+            <UilArrowDown size={28} className="scroll-icon" />
+          </motion.div>
+          <span>Scroll Down</span>
+        </Link>
       </motion.div>
     </section>
   );

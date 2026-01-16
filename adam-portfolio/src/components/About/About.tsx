@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import CountUp from 'react-countup';
-import { FaAward, FaLightbulb, FaRocket, FaUsers } from 'react-icons/fa';
+import { UilAward, UilLightbulb, UilRocket, UilUsersAlt } from '@iconscout/react-unicons';
 import './About.css';
 
 const About: React.FC = () => {
@@ -21,10 +21,10 @@ const About: React.FC = () => {
   ];
 
   const highlights = [
-    { icon: <FaAward />, title: 'Award Winning', description: 'Multiple industry awards for marketing excellence' },
-    { icon: <FaLightbulb />, title: 'Innovative', description: 'Pioneering new marketing strategies' },
-    { icon: <FaRocket />, title: 'Results Driven', description: 'Consistent ROI improvement' },
-    { icon: <FaUsers />, title: 'Team Builder', description: 'Built & led teams of 50+ marketers' },
+    { icon: <UilAward size={28} />, title: 'Award Winning', description: 'Multiple industry awards for marketing excellence' },
+    { icon: <UilLightbulb size={28} />, title: 'Innovative', description: 'Pioneering new marketing strategies' },
+    { icon: <UilRocket size={28} />, title: 'Results Driven', description: 'Consistent ROI improvement' },
+    { icon: <UilUsersAlt size={28} />, title: 'Team Builder', description: 'Built & led teams of 50+ marketers' },
   ];
 
   const containerVariants = {

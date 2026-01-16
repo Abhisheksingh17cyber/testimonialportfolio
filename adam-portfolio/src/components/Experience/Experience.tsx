@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { FaBriefcase, FaGraduationCap } from 'react-icons/fa';
+import { UilBriefcaseAlt, UilGraduationCap } from '@iconscout/react-unicons';
 import './Experience.css';
 
 const Experience: React.FC = () => {
@@ -112,7 +112,7 @@ const Experience: React.FC = () => {
             animate={inView ? 'visible' : 'hidden'}
           >
             <div className="timeline-header">
-              <FaBriefcase className="timeline-icon" />
+              <UilBriefcaseAlt size={28} className="timeline-icon" />
               <h3>Work Experience</h3>
             </div>
             
@@ -150,7 +150,7 @@ const Experience: React.FC = () => {
               animate={inView ? 'visible' : 'hidden'}
             >
               <div className="timeline-header">
-                <FaGraduationCap className="timeline-icon" />
+                <UilGraduationCap size={28} className="timeline-icon" />
                 <h3>Education</h3>
               </div>
               

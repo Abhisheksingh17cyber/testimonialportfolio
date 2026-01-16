@@ -1,53 +1,48 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaBars, FaTimes } from 'react-icons/fa';
+import { Link } from 'react-scroll';
+import { UilBars, UilTimes } from '@iconscout/react-unicons';
 import './Navbar.css';
 
 const Navbar: React.FC = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState('home');
+  const [isScrolled, setIsScrolled] = useState<boolean>(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+  const [activeSection, setActiveSection] = useState<string>('home');
 
-  const navItems = [
-    { name: 'Home', href: '#home' },
-    { name: 'About', href: '#about' },
-    { name: 'Services', href: '#services' },
-    { name: 'Portfolio', href: '#portfolio' },
-    { name: 'Experience', href: '#experience' },
-    { name: 'Testimonials', href: '#testimonials' },
-    { name: 'Contact', href: '#contact' },
-  ];
+  const navItems = useMemo(() => [
+    { name: 'Home', href: 'home' },
+    { name: 'About', href: 'about' },
+    { name: 'Services', href: 'services' },
+    { name: 'Portfolio', href: 'portfolio' },
+    { name: 'Experience', href: 'experience' },
+    { name: 'Testimonials', href: 'testimonials' },
+    { name: 'Contact', href: 'contact' },
+  ], []);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+  const handleScroll = useCallback(() => {
+    setIsScrolled(window.scrollY > 50);
 
-      // Update active section based on scroll position
-      const sections = navItems.map(item => item.href.slice(1));
-      for (const section of sections.reverse()) {
-        const element = document.getElementById(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          if (rect.top <= 100) {
-            setActiveSection(section);
-            break;
-          }
+    const sections = navItems.map(item => item.href);
+    for (const section of [...sections].reverse()) {
+      const element = document.getElementById(section);
+      if (element) {
+        const rect = element.getBoundingClientRect();
+        if (rect.top <= 100) {
+          setActiveSection(section);
+          break;
         }
       }
-    };
+    }
+  }, [navItems]);
 
+  useEffect(() => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [handleScroll]);
 
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault();
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+  const closeMobileMenu = useCallback(() => {
     setIsMobileMenuOpen(false);
-  };
+  }, []);
 
   return (
     <motion.nav
@@ -57,56 +52,65 @@ const Navbar: React.FC = () => {
       transition={{ duration: 0.8, ease: 'easeOut' }}
     >
       <div className="navbar-container">
-        <motion.a
-          href="#home"
+        <motion.div
           className="navbar-logo"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          onClick={(e) => handleNavClick(e, '#home')}
         >
-          <span className="logo-text">ADAM</span>
-          <span className="logo-dot">.</span>
-        </motion.a>
+          <Link to="home" spy={true} smooth={true} offset={-70} duration={500}>
+            <span className="logo-text">ADAM</span>
+            <span className="logo-dot">.</span>
+          </Link>
+        </motion.div>
 
         <div className="navbar-links">
           {navItems.map((item, index) => (
-            <motion.a
+            <motion.div
               key={item.name}
-              href={item.href}
-              className={`nav-link ${activeSection === item.href.slice(1) ? 'active' : ''}`}
-              onClick={(e) => handleNavClick(e, item.href)}
+              className={`nav-link-wrapper ${activeSection === item.href ? 'active' : ''}`}
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
               whileHover={{ y: -2 }}
             >
-              {item.name}
-              {activeSection === item.href.slice(1) && (
+              <Link
+                to={item.href}
+                spy={true}
+                smooth={true}
+                offset={-70}
+                duration={500}
+                className={`nav-link ${activeSection === item.href ? 'active' : ''}`}
+                onSetActive={() => setActiveSection(item.href)}
+              >
+                {item.name}
+              </Link>
+              {activeSection === item.href && (
                 <motion.span
                   className="nav-indicator"
                   layoutId="navIndicator"
                   transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                 />
               )}
-            </motion.a>
+            </motion.div>
           ))}
         </div>
 
-        <motion.a
-          href="#contact"
+        <motion.div
           className="navbar-cta"
           whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(212, 175, 55, 0.5)' }}
           whileTap={{ scale: 0.95 }}
-          onClick={(e) => handleNavClick(e, '#contact')}
         >
-          Let's Talk
-        </motion.a>
+          <Link to="contact" spy={true} smooth={true} offset={-70} duration={500}>
+            Let's Talk
+          </Link>
+        </motion.div>
 
         <button
           className="mobile-menu-btn"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          aria-label="Toggle mobile menu"
         >
-          {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
+          {isMobileMenuOpen ? <UilTimes size={28} /> : <UilBars size={28} />}
         </button>
       </div>
 
@@ -120,28 +124,42 @@ const Navbar: React.FC = () => {
             transition={{ duration: 0.3 }}
           >
             {navItems.map((item, index) => (
-              <motion.a
+              <motion.div
                 key={item.name}
-                href={item.href}
-                className={`mobile-nav-link ${activeSection === item.href.slice(1) ? 'active' : ''}`}
-                onClick={(e) => handleNavClick(e, item.href)}
+                className={`mobile-nav-link ${activeSection === item.href ? 'active' : ''}`}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
               >
-                {item.name}
-              </motion.a>
+                <Link
+                  to={item.href}
+                  spy={true}
+                  smooth={true}
+                  offset={-70}
+                  duration={500}
+                  onClick={closeMobileMenu}
+                >
+                  {item.name}
+                </Link>
+              </motion.div>
             ))}
-            <motion.a
-              href="#contact"
+            <motion.div
               className="mobile-cta"
-              onClick={(e) => handleNavClick(e, '#contact')}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: navItems.length * 0.1 }}
             >
-              Let's Talk
-            </motion.a>
+              <Link
+                to="contact"
+                spy={true}
+                smooth={true}
+                offset={-70}
+                duration={500}
+                onClick={closeMobileMenu}
+              >
+                Let's Talk
+              </Link>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

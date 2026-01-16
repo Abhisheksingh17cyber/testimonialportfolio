@@ -1,7 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React from 'react';
+import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { FaQuoteLeft, FaStar, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { UilCommentDots, UilStar, UilAngleLeftB, UilAngleRightB } from '@iconscout/react-unicons';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Pagination, Autoplay, EffectCoverflow } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/effect-coverflow';
 import './Testimonials.css';
 
 const Testimonials: React.FC = () => {
@@ -9,9 +15,6 @@ const Testimonials: React.FC = () => {
     triggerOnce: true,
     threshold: 0.1,
   });
-
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [direction, setDirection] = useState(0);
 
   const testimonials = [
     {
@@ -65,39 +68,6 @@ const Testimonials: React.FC = () => {
     'Google', 'Microsoft', 'Apple', 'Amazon', 'Meta', 'Tesla', 'Nike', 'Adidas'
   ];
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setDirection(1);
-      setCurrentIndex((prev) => (prev + 1) % testimonials.length);
-    }, 6000);
-    return () => clearInterval(timer);
-  }, [testimonials.length]);
-
-  const handlePrev = () => {
-    setDirection(-1);
-    setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
-  };
-
-  const handleNext = () => {
-    setDirection(1);
-    setCurrentIndex((prev) => (prev + 1) % testimonials.length);
-  };
-
-  const slideVariants = {
-    enter: (direction: number) => ({
-      x: direction > 0 ? 1000 : -1000,
-      opacity: 0,
-    }),
-    center: {
-      x: 0,
-      opacity: 1,
-    },
-    exit: (direction: number) => ({
-      x: direction < 0 ? 1000 : -1000,
-      opacity: 0,
-    }),
-  };
-
   return (
     <section id="testimonials" className="testimonials section" ref={ref}>
       <div className="testimonials-background">
@@ -117,65 +87,92 @@ const Testimonials: React.FC = () => {
           </h2>
         </motion.div>
 
-        <div className="testimonials-wrapper">
-          <button className="testimonial-nav prev" onClick={handlePrev}>
-            <FaChevronLeft />
-          </button>
-
-          <div className="testimonial-slider">
-            <AnimatePresence mode="wait" custom={direction}>
-              <motion.div
-                key={currentIndex}
-                custom={direction}
-                variants={slideVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{ duration: 0.5, ease: 'easeInOut' }}
-                className="testimonial-card"
-              >
-                <div className="testimonial-quote">
-                  <FaQuoteLeft className="quote-icon" />
-                </div>
-                
-                <p className="testimonial-text">{testimonials[currentIndex].text}</p>
-                
-                <div className="testimonial-rating">
-                  {[...Array(testimonials[currentIndex].rating)].map((_, i) => (
-                    <FaStar key={i} className="star" />
-                  ))}
-                </div>
-
-                <div className="testimonial-author">
-                  <div className="author-image">
-                    <img src={testimonials[currentIndex].image} alt={testimonials[currentIndex].name} />
+        <motion.div
+          className="testimonials-wrapper"
+          initial={{ opacity: 0, y: 50 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
+          <Swiper
+            modules={[Navigation, Pagination, Autoplay, EffectCoverflow]}
+            effect="coverflow"
+            grabCursor={true}
+            centeredSlides={true}
+            slidesPerView="auto"
+            coverflowEffect={{
+              rotate: 0,
+              stretch: 0,
+              depth: 100,
+              modifier: 2.5,
+              slideShadows: false,
+            }}
+            autoplay={{
+              delay: 5000,
+              disableOnInteraction: false,
+            }}
+            pagination={{
+              clickable: true,
+              dynamicBullets: true,
+            }}
+            navigation={{
+              prevEl: '.swiper-button-prev-custom',
+              nextEl: '.swiper-button-next-custom',
+            }}
+            breakpoints={{
+              640: {
+                slidesPerView: 1,
+              },
+              768: {
+                slidesPerView: 2,
+              },
+              1024: {
+                slidesPerView: 3,
+              },
+            }}
+            className="testimonials-swiper"
+          >
+            {testimonials.map((testimonial) => (
+              <SwiperSlide key={testimonial.id}>
+                <motion.div
+                  className="testimonial-card"
+                  whileHover={{ y: -10, boxShadow: '0 20px 60px rgba(212, 175, 55, 0.15)' }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <div className="testimonial-quote">
+                    <UilCommentDots size={40} className="quote-icon" />
                   </div>
-                  <div className="author-info">
-                    <h4 className="author-name">{testimonials[currentIndex].name}</h4>
-                    <p className="author-role">{testimonials[currentIndex].role}</p>
+                  
+                  <p className="testimonial-text">{testimonial.text}</p>
+                  
+                  <div className="testimonial-rating">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <UilStar key={i} size={20} className="star" />
+                    ))}
                   </div>
-                </div>
-              </motion.div>
-            </AnimatePresence>
+
+                  <div className="testimonial-author">
+                    <div className="author-image">
+                      <img src={testimonial.image} alt={testimonial.name} loading="lazy" />
+                    </div>
+                    <div className="author-info">
+                      <h4 className="author-name">{testimonial.name}</h4>
+                      <p className="author-role">{testimonial.role}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+
+          <div className="swiper-navigation">
+            <button className="swiper-button-prev-custom" aria-label="Previous testimonial">
+              <UilAngleLeftB size={24} />
+            </button>
+            <button className="swiper-button-next-custom" aria-label="Next testimonial">
+              <UilAngleRightB size={24} />
+            </button>
           </div>
-
-          <button className="testimonial-nav next" onClick={handleNext}>
-            <FaChevronRight />
-          </button>
-        </div>
-
-        <div className="testimonial-dots">
-          {testimonials.map((_, index) => (
-            <button
-              key={index}
-              className={`dot ${index === currentIndex ? 'active' : ''}`}
-              onClick={() => {
-                setDirection(index > currentIndex ? 1 : -1);
-                setCurrentIndex(index);
-              }}
-            />
-          ))}
-        </div>
+        </motion.div>
 
         <motion.div
           className="clients-section"

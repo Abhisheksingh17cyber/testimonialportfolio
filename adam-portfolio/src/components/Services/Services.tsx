@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { FaBullhorn, FaChartLine, FaPenNib, FaUsers, FaSearchDollar, FaMobile, FaVideo, FaGlobe } from 'react-icons/fa';
+import { UilMegaphone, UilChartLine, UilPen, UilUsersAlt, UilSearchPlus, UilMobileAndroid, UilVideo, UilGlobe } from '@iconscout/react-unicons';
 import './Services.css';
 
 const Services: React.FC = () => {
@@ -12,49 +12,49 @@ const Services: React.FC = () => {
 
   const services = [
     {
-      icon: <FaBullhorn />,
+      icon: <UilMegaphone size={32} />,
       title: 'Brand Strategy',
       description: 'Developing comprehensive brand strategies that position your business for market leadership and sustainable growth.',
       features: ['Brand Positioning', 'Market Analysis', 'Competitive Strategy'],
     },
     {
-      icon: <FaChartLine />,
+      icon: <UilChartLine size={32} />,
       title: 'Growth Marketing',
       description: 'Data-driven marketing strategies focused on rapid scaling and measurable business outcomes.',
       features: ['Conversion Optimization', 'A/B Testing', 'Funnel Analysis'],
     },
     {
-      icon: <FaPenNib />,
+      icon: <UilPen size={32} />,
       title: 'Content Strategy',
       description: 'Creating compelling content that tells your brand story and engages your target audience effectively.',
       features: ['Content Planning', 'Storytelling', 'Editorial Calendar'],
     },
     {
-      icon: <FaUsers />,
+      icon: <UilUsersAlt size={32} />,
       title: 'Team Leadership',
       description: 'Building and mentoring high-performing marketing teams that deliver exceptional results.',
       features: ['Team Building', 'Performance Management', 'Training Programs'],
     },
     {
-      icon: <FaSearchDollar />,
+      icon: <UilSearchPlus size={32} />,
       title: 'Digital Advertising',
       description: 'Strategic paid media campaigns across platforms to maximize ROI and reach target audiences.',
       features: ['PPC Campaigns', 'Social Ads', 'Retargeting'],
     },
     {
-      icon: <FaMobile />,
+      icon: <UilMobileAndroid size={32} />,
       title: 'Social Media',
       description: 'Building engaged communities and driving brand awareness through strategic social media management.',
       features: ['Community Management', 'Influencer Partnerships', 'Social Listening'],
     },
     {
-      icon: <FaVideo />,
+      icon: <UilVideo size={32} />,
       title: 'Video Marketing',
       description: 'Producing engaging video content that captures attention and drives conversions.',
       features: ['Video Strategy', 'Production Oversight', 'Distribution Planning'],
     },
     {
-      icon: <FaGlobe />,
+      icon: <UilGlobe size={32} />,
       title: 'Global Marketing',
       description: 'Expanding brands into international markets with culturally relevant strategies.',
       features: ['Market Entry', 'Localization', 'Cultural Adaptation'],

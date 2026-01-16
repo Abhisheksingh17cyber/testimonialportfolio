@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ThemeProvider } from './context/ThemeContext';
 import Navbar from './components/Navbar/Navbar';
 import Hero from './components/Hero/Hero';
 import About from './components/About/About';
@@ -62,21 +63,21 @@ const CustomCursor: React.FC = () => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isPointer, setIsPointer] = useState(false);
 
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    setPosition({ x: e.clientX, y: e.clientY });
+
+    const target = e.target as HTMLElement;
+    setIsPointer(
+      window.getComputedStyle(target).cursor === 'pointer' ||
+      target.tagName === 'A' ||
+      target.tagName === 'BUTTON'
+    );
+  }, []);
+
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setPosition({ x: e.clientX, y: e.clientY });
-
-      const target = e.target as HTMLElement;
-      setIsPointer(
-        window.getComputedStyle(target).cursor === 'pointer' ||
-        target.tagName === 'A' ||
-        target.tagName === 'BUTTON'
-      );
-    };
-
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
+  }, [handleMouseMove]);
 
   return (
     <>
@@ -98,33 +99,35 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   return (
-    <div className="App">
-      <AnimatePresence mode="wait">
-        {loading ? (
-          <LoadingScreen key="loading" setLoading={setLoading} />
-        ) : (
-          <motion.div
-            key="main"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            <CustomCursor />
-            <Navbar />
-            <main>
-              <Hero />
-              <About />
-              <Services />
-              <Portfolio />
-              <Experience />
-              <Testimonials />
-              <Contact />
-            </main>
-            <Footer />
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+    <ThemeProvider>
+      <div className="App">
+        <AnimatePresence mode="wait">
+          {loading ? (
+            <LoadingScreen key="loading" setLoading={setLoading} />
+          ) : (
+            <motion.div
+              key="main"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              <CustomCursor />
+              <Navbar />
+              <main>
+                <Hero />
+                <About />
+                <Services />
+                <Portfolio />
+                <Experience />
+                <Testimonials />
+                <Contact />
+              </main>
+              <Footer />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </ThemeProvider>
   );
 }
 

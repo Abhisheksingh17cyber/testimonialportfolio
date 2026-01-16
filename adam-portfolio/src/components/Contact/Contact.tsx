@@ -1,14 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaLinkedin, FaTwitter, FaInstagram, FaDribbble, FaPaperPlane } from 'react-icons/fa';
+import { UilEnvelope, UilPhone, UilMapMarker, UilLinkedin, UilTwitter, UilInstagram, UilDribbble, UilMessage } from '@iconscout/react-unicons';
+import emailjs from '@emailjs/browser';
 import './Contact.css';
+
+// EmailJS Configuration - Replace with your own keys
+const EMAILJS_SERVICE_ID = 'service_xxxxxxx'; // Replace with your EmailJS service ID
+const EMAILJS_TEMPLATE_ID = 'template_xxxxxxx'; // Replace with your EmailJS template ID
+const EMAILJS_PUBLIC_KEY = 'xxxxxxxxxxxxxxx'; // Replace with your EmailJS public key
 
 const Contact: React.FC = () => {
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
   });
+
+  const formRef = useRef<HTMLFormElement>(null);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -19,39 +27,55 @@ const Contact: React.FC = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({
-      ...formData,
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setFormData((prev) => ({
+      ...prev,
       [e.target.name]: e.target.value,
-    });
-  };
+    }));
+    setError(null);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    
-    setIsSubmitting(false);
-    setSubmitted(true);
-    setFormData({ name: '', email: '', subject: '', message: '' });
-    
-    setTimeout(() => setSubmitted(false), 5000);
+    setError(null);
+
+    try {
+      // Using EmailJS to send emails
+      if (formRef.current) {
+        await emailjs.sendForm(
+          EMAILJS_SERVICE_ID,
+          EMAILJS_TEMPLATE_ID,
+          formRef.current,
+          EMAILJS_PUBLIC_KEY
+        );
+      }
+      
+      setIsSubmitting(false);
+      setSubmitted(true);
+      setFormData({ name: '', email: '', subject: '', message: '' });
+      
+      setTimeout(() => setSubmitted(false), 5000);
+    } catch (err) {
+      setIsSubmitting(false);
+      setError('Failed to send message. Please try again or contact directly via email.');
+      console.error('EmailJS Error:', err);
+    }
   };
 
   const contactInfo = [
-    { icon: <FaEnvelope />, label: 'Email', value: 'adam@marketing-pro.com', href: 'mailto:adam@marketing-pro.com' },
-    { icon: <FaPhone />, label: 'Phone', value: '+1 (555) 123-4567', href: 'tel:+15551234567' },
-    { icon: <FaMapMarkerAlt />, label: 'Location', value: 'New York, NY', href: '#' },
+    { icon: <UilEnvelope size={24} />, label: 'Email', value: 'adam@marketing-pro.com', href: 'mailto:adam@marketing-pro.com' },
+    { icon: <UilPhone size={24} />, label: 'Phone', value: '+1 (555) 123-4567', href: 'tel:+15551234567' },
+    { icon: <UilMapMarker size={24} />, label: 'Location', value: 'New York, NY', href: '#' },
   ];
 
   const socialLinks = [
-    { icon: <FaLinkedin />, href: 'https://linkedin.com', label: 'LinkedIn' },
-    { icon: <FaTwitter />, href: 'https://twitter.com', label: 'Twitter' },
-    { icon: <FaInstagram />, href: 'https://instagram.com', label: 'Instagram' },
-    { icon: <FaDribbble />, href: 'https://dribbble.com', label: 'Dribbble' },
+    { icon: <UilLinkedin size={24} />, href: 'https://linkedin.com', label: 'LinkedIn' },
+    { icon: <UilTwitter size={24} />, href: 'https://twitter.com', label: 'Twitter' },
+    { icon: <UilInstagram size={24} />, href: 'https://instagram.com', label: 'Instagram' },
+    { icon: <UilDribbble size={24} />, href: 'https://dribbble.com', label: 'Dribbble' },
   ];
 
   return (
@@ -125,6 +149,7 @@ const Contact: React.FC = () => {
                     transition={{ delay: 0.5 + index * 0.1 }}
                     whileHover={{ scale: 1.1, y: -5 }}
                     whileTap={{ scale: 0.9 }}
+                    aria-label={social.label}
                   >
                     {social.icon}
                   </motion.a>
@@ -144,7 +169,7 @@ const Contact: React.FC = () => {
             animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <form className="contact-form" onSubmit={handleSubmit}>
+            <form className="contact-form" ref={formRef} onSubmit={handleSubmit}>
               <div className="form-row">
                 <div className="form-group">
                   <label htmlFor="name">Full Name</label>
@@ -156,6 +181,7 @@ const Contact: React.FC = () => {
                     onChange={handleChange}
                     required
                     placeholder="John Doe"
+                    autoComplete="name"
                   />
                 </div>
                 <div className="form-group">
@@ -168,6 +194,7 @@ const Contact: React.FC = () => {
                     onChange={handleChange}
                     required
                     placeholder="john@example.com"
+                    autoComplete="email"
                   />
                 </div>
               </div>
@@ -203,6 +230,16 @@ const Contact: React.FC = () => {
                 />
               </div>
 
+              {error && (
+                <motion.div 
+                  className="form-error"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                >
+                  {error}
+                </motion.div>
+              )}
+
               <motion.button
                 type="submit"
                 className="submit-btn"
@@ -211,12 +248,15 @@ const Contact: React.FC = () => {
                 whileTap={{ scale: 0.98 }}
               >
                 {isSubmitting ? (
-                  <span className="btn-loading">Sending...</span>
+                  <span className="btn-loading">
+                    <span className="spinner" />
+                    Sending...
+                  </span>
                 ) : submitted ? (
                   <span className="btn-success">Message Sent! ✓</span>
                 ) : (
                   <>
-                    <FaPaperPlane />
+                    <UilMessage size={20} />
                     Send Message
                   </>
                 )}

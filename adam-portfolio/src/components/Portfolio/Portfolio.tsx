@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { FaExternalLinkAlt, FaExpand, FaTimes } from 'react-icons/fa';
+import { UilExternalLinkAlt, UilExpandArrows, UilTimes } from '@iconscout/react-unicons';
 import './Portfolio.css';
 
 interface Project {
@@ -160,23 +160,25 @@ const Portfolio: React.FC = () => {
                 whileHover={{ y: -10 }}
               >
                 <div className="portfolio-image">
-                  <img src={project.image} alt={project.title} />
+                  <img src={project.image} alt={project.title} loading="lazy" />
                   <div className="portfolio-overlay">
                     <motion.button
                       className="portfolio-action"
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
                       onClick={() => setSelectedProject(project)}
+                      aria-label="View project details"
                     >
-                      <FaExpand />
+                      <UilExpandArrows size={20} />
                     </motion.button>
                     <motion.a
                       href={project.link}
                       className="portfolio-action"
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
+                      aria-label="Open project link"
                     >
-                      <FaExternalLinkAlt />
+                      <UilExternalLinkAlt size={20} />
                     </motion.a>
                   </div>
                 </div>
@@ -215,8 +217,9 @@ const Portfolio: React.FC = () => {
                 <button
                   className="modal-close"
                   onClick={() => setSelectedProject(null)}
+                  aria-label="Close modal"
                 >
-                  <FaTimes />
+                  <UilTimes size={24} />
                 </button>
                 <div className="modal-image">
                   <img src={selectedProject.image} alt={selectedProject.title} />
