@@ -1,14 +1,12 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "build"
-      }
-    }
-  ],
+  "framework": "create-react-app",
+  "buildCommand": "CI=false npm run build",
+  "outputDirectory": "build",
+  "installCommand": "npm install",
+  "env": {
+    "CI": "false"
+  },
   "routes": [
     {
       "src": "/static/(.*)",
@@ -18,8 +16,11 @@
       "dest": "/static/$1"
     },
     {
+      "handle": "filesystem"
+    },
+    {
       "src": "/(.*)",
-      "dest": "/$1"
+      "dest": "/index.html"
     }
   ],
   "headers": [
@@ -36,6 +37,12 @@
         },
         {
           "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
+      ]
+    }
+  ]
+}
           "value": "1; mode=block"
         }
       ]

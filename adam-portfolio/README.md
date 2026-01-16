@@ -106,13 +106,41 @@ adam-portfolio/
 
 ## 🚀 Deployment
 
-### Vercel (Recommended)
-The project includes a `vercel.json` configuration file for easy deployment.
+### Vercel (Recommended) - One-Click Deploy
 
+The easiest way to deploy this portfolio:
+
+#### Option 1: Deploy via Vercel Dashboard (Easiest)
+1. Push your code to GitHub
+2. Go to [vercel.com](https://vercel.com) and sign up/login
+3. Click **"Add New Project"**
+4. Import your GitHub repository
+5. Vercel will auto-detect the React app settings
+6. Click **"Deploy"** - that's it!
+
+#### Option 2: Deploy via Vercel CLI
 ```bash
+# Install Vercel CLI globally
 npm install -g vercel
+
+# Login to Vercel
+vercel login
+
+# Deploy (from project root)
+vercel
+
+# For production deployment
 vercel --prod
 ```
+
+#### Option 3: One-Click Deploy Button
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/YOUR_USERNAME/adam-portfolio)
+
+### Environment Variables (Optional)
+If using EmailJS for the contact form, add these in Vercel Dashboard > Settings > Environment Variables:
+- `REACT_APP_EMAILJS_SERVICE_ID`
+- `REACT_APP_EMAILJS_TEMPLATE_ID`
+- `REACT_APP_EMAILJS_PUBLIC_KEY`
 
 ### Netlify
 ```bash
