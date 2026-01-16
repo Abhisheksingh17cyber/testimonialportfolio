@@ -116,8 +116,13 @@ fi
 
 # Push to GitHub
 echo "Pushing to GitHub..."
-git push -u origin main --force
-echo "✓ Code pushed successfully!"
+if git push -u origin main 2>/dev/null; then
+    echo "✓ Code pushed successfully!"
+else
+    echo "Note: Remote has changes. Attempting force push with lease for safety..."
+    git push -u origin main --force-with-lease
+    echo "✓ Code pushed successfully!"
+fi
 
 echo ""
 echo "=========================================="
